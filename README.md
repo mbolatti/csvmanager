@@ -18,15 +18,18 @@ This project is a CSV Importer and Exporter.
 * Java 17
 * Spring Boot 3.3.2
 * MySQL 8.3.0
-* Docker Compose
+* Docker
 
 ## Requirements
 * Have installed Java JDK 17
 * Have installed Maven 3+
-* Have installed Docker and Docker compose newer versions
+* Have installed Docker 26.1.4+ and Docker compose v2.29.1+
 
 ## Setting up the application
-1. Clone the repository: `git clone https://github.com/mbolatti/csvmanager.git`
+1. Clone the repository: 
+```bash
+git clone https://github.com/mbolatti/csvmanager.git
+```
 2. Enter to the _csvmanager_ folder created by the clone action.
 3. Run `mvn clean package`
 
