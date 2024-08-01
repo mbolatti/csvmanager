@@ -1,0 +1,36 @@
+services:
+  db:
+    image: mysql:8.3.0
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/mysql
+    container_name: mysql-mbolatti
+    ports:
+      - "33060:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: csvimporter
+      MYSQL_USER: csvimporter
+      MYSQL_PASSWORD: csvimporter
+    command: ["--init-file", "/docker-entrypoint-initdb.d/init.sql"]
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "--silent" ]
+      retries: 1
+  app:
+    container_name: csvimporter-mbolatti
+    build: .
+    ports:
+      - "8090:8090"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/csvmanager?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: csvimporter
+      SPRING_DATASOURCE_PASSWORD: csvimporter
+      SPRING_JPA_SHOW_SQL: false
+    command: ["sh", "-c", "while ! nc -z mysql 3306; do sleep 1; done; java -jar /app.jar"]
+
+volumes:
+  db_data:
+  init:

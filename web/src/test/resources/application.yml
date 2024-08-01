@@ -1,0 +1,43 @@
+server:
+  port: 8090
+spring:
+  application:
+    description: CSV Manager
+    version: 0.0.1
+    name: csvmanager
+  datasource:
+    url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 500KB
+      max-request-size: 500KB
+  web:
+    resources:
+      static-locations:
+        - classpath:/META-INF/resources/
+        - classpath:/resources/
+        - classpath:/static/
+        - classpath:/public/
+application:
+  csv:
+    parser: apache-commons-csv
+
+debug: false
+
+logging:
+  level:
+    root: INFO
+    liquibase: INFO
+    org:
+      hibernate:
+        sql: INFO

@@ -1,0 +1,337 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_user_account_table
+      author: Martin Bolatti
+      changes:
+        - createTable:
+            tableName: user_account
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token_expired
+                  type: boolean
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create_role_table
+      author: Martin Bolatti
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create_user_role_table
+      author: Martin Bolatti
+      changes:
+        - createTable:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: user_role
+            columnNames: user_id, role_id
+        - addForeignKeyConstraint:
+            baseTableName: user_role
+            baseColumnNames: user_id
+            referencedTableName: user_account
+            referencedColumnNames: id
+            constraintName: fk_user_role_user
+        - addForeignKeyConstraint:
+            baseTableName: user_role
+            baseColumnNames: role_id
+            referencedTableName: role
+            referencedColumnNames: id
+            constraintName: fk_user_role_role
+
+  - changeSet:
+      id: create_privilege_table
+      author: Martin Bolatti
+      changes:
+        - createTable:
+            tableName: privilege
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create_role_privilege_table
+      author: Martin Bolatti
+      changes:
+        - createTable:
+            tableName: role_privilege
+            columns:
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: privilege_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: role_privilege
+            columnNames: role_id, privilege_id
+        - addForeignKeyConstraint:
+            baseTableName: role_privilege
+            baseColumnNames: role_id
+            referencedTableName: role
+            referencedColumnNames: id
+            constraintName: fk_role_privilege_role
+        - addForeignKeyConstraint:
+            baseTableName: role_privilege
+            baseColumnNames: privilege_id
+            referencedTableName: privilege
+            referencedColumnNames: id
+            constraintName: fk_role_privilege_privilege
+
+  - changeSet:
+      id: populate_role_admin
+      author: Martin Bolatti
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: ADMIN
+
+  - changeSet:
+      id: populate_role_user
+      author: Martin Bolatti
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: USER
+
+  - changeSet:
+      id: populate_privilege_read
+      author: Martin Bolatti
+      changes:
+        - insert:
+            tableName: privilege
+            columns:
+              - column:
+                  name: name
+                  value: READ_PRIVILEGE
+
+  - changeSet:
+      id: populate_privilege_write
+      author: Martin Bolatti
+      changes:
+        - insert:
+            tableName: privilege
+            columns:
+              - column:
+                  name: name
+                  value: WRITE_PRIVILEGE
+
+  - changeSet:
+      id: populate_role_privilege_admin_read
+      author: Martin Bolatti
+      changes:
+        - insert:
+            tableName: role_privilege
+            columns:
+              - column:
+                  name: role_id
+                  value: 1
+              - column:
+                  name: privilege_id
+                  value: 1
+
+  - changeSet:
+      id: populate_role_privilege_admin_write
+      author: Martin Bolatti
+      changes:
+        - insert:
+            tableName: role_privilege
+            columns:
+              - column:
+                  name: role_id
+                  value: 1
+              - column:
+                  name: privilege_id
+                  value: 2
+
+  - changeSet:
+      id: create-persona_data-table
+      author: Martin Bolatti
+      changes:
+        - createTable:
+            tableName: personal_data
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: import_id
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: import_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: birth_date
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: city
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: fiscal_code
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: create_city_fiscal_code_import_date_index
+      author: Martin Bolatti
+      changes:
+        - createIndex:
+            tableName: personal_data
+            indexName: idx_city_fiscal_code
+            columns:
+              - column:
+                  name: city
+              - column:
+                  name: fiscal_code
+              - column:
+                  name: import_date
+
+  - changeSet:
+      id: create_unique_constraint_on_table
+      author: Martin Bolatti
+      changes:
+        - addUniqueConstraint:
+            tableName: personal_data
+            columnNames: import_date, city, fiscal_code
+            constraintName: unique_constraint_on_table
+
+  - changeSet:
+      id: populate_user_prueba_admin
+      author: Martin Bolatti
+      changes:
+        - insert:
+            tableName: user_account
+            columns:
+              - column:
+                  name: first_name
+                  value: 'John'
+              - column:
+                  name: last_name
+                  value: 'Doe'
+              - column:
+                  name: email
+                  value: 'test@test.com'
+              - column:
+                  name: password
+                  value: $2a$10$4Ga3ZDrTLRpA8Ri/I5kJuuCPRVPH/z/MIVFfKAqfoPJDo8GecnlNS
+              - column:
+                  name: enabled
+                  value: 1
+              - column:
+                  name: token_expired
+                  value: 0
+
+  - changeSet:
+      id: user_role_prueba
+      author: Martin Bolatti
+      changes:
+        - insert:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 1
