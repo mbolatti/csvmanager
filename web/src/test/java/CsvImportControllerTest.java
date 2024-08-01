@@ -63,7 +63,7 @@ public class CsvImportControllerTest {
     MockMultipartFile file = new MockMultipartFile("file", "test.csv", "text/csv",
         "name,surname,date,city,code\n".getBytes());
 
-    mockMvc.perform(multipart("/api/v1/private/data/import")
+    mockMvc.perform(multipart("/api/v1/private/data/imports")
             .file(file)
             .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isOk())
@@ -75,7 +75,7 @@ public class CsvImportControllerTest {
     List<PersonalDataDto> mockResult = new ArrayList<>();
     when(processCsvUseCase.returnAll()).thenReturn(mockResult);
 
-    mockMvc.perform(get("/api/v1/private/data/import")
+    mockMvc.perform(get("/api/v1/private/data/imports")
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -107,7 +107,7 @@ public class CsvImportControllerTest {
       return outputStream;
     }).when(processCsvUseCase).writePersonalDataToCsv(any(ByteArrayOutputStream.class));
 
-    mockMvc.perform(get("/api/v1/private/data/export"))
+    mockMvc.perform(get("/api/v1/private/data/exports"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
         .andExpect(

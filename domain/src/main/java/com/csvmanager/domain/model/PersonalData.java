@@ -36,8 +36,7 @@ public class PersonalData {
 
     @Override
     public String toString() {
-        return "importId=" + importId +
-            ", nome='" + name + '\'' +
+        return "nome='" + name + '\'' +
             ", cognome='" + lastName + '\'' +
             ", DataDiNascita='" + birthDate + '\'' +
             ", città='" + city + '\'' +

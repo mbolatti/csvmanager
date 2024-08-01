@@ -34,6 +34,9 @@ spring:
         - classpath:/resources/
         - classpath:/static/
         - classpath:/public/
+springdoc:
+  swagger-ui:
+    defaultModelsExpandDepth: -1
 
 application:
   csv:

@@ -41,7 +41,7 @@ public class CsvImportController {
     this.processCsvUseCase = processCsvUseCase;
   }
 
-  @PostMapping(path = "import", consumes = "multipart/form-data")
+  @PostMapping(path = "imports", consumes = "multipart/form-data")
   @Operation(summary = "Import CSV data", description = "Imports CSV data from a file")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "CSV import successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProcessResultDto.class))),
@@ -54,7 +54,7 @@ public class CsvImportController {
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
-  @GetMapping(path = "import", produces = "application/json")
+  @GetMapping(path = "imports", produces = "application/json")
   @Operation(summary = "Get All CSV imports", description = "Return all the imported CSVs")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Get all the imported CSVs", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PersonalDataDto.class)))),
@@ -68,7 +68,7 @@ public class CsvImportController {
   }
 
   @SneakyThrows
-  @GetMapping(path = "export", produces = "text/csv")
+  @GetMapping(path = "exports", produces = "text/csv")
   @Operation(summary = "Download a file with All CSV imports", description = "Return a CSV file with all the imported CSVs")
   @ApiResponses(value = {
       @ApiResponse(responseCode = "200", description = "Get the file with all the imported CSVs",

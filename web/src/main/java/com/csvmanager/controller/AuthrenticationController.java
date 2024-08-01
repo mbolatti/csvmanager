@@ -30,7 +30,7 @@ public class AuthrenticationController {
     return ResponseEntity.accepted().body(authenticationReponse);
   }
 
-  @PostMapping("authenticate")
+  @PostMapping("login")
   public ResponseEntity<AuthenticationReponse> authenticate(@Valid @RequestBody AuthRequest request) {
     log.info("authenticating user");
     return ResponseEntity.ok(authService.authenticate(request));
