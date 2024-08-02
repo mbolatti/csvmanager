@@ -1,14 +1,3 @@
-un README.md con una breve descrizione dell'applicativo, istruzioni su come
-avviare il progetto, requisiti come il tipo di DBMS e versione di Java / spring,
-istruzioni per l'installazione delle dipendenze, indicazioni per l'uso di Docker
-Compose (se pertinente), 
-
-e istruzioni per la creazione di un account per
-l'accesso. 
-
-Fornisci informazioni chiare e concise per facilitare l'utilizzo e la
-collaborazione per il progetto.
-
 # CSV Manager
 
 ## Introduzione
