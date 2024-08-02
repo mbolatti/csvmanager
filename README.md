@@ -37,7 +37,10 @@ git clone https://github.com/mbolatti/csvmanager.git
 ```bash
 docker-compose up --build
 ```
-   The application will be available in http://localhost:8090
+If everything works well the application will be available in http://localhost:8090
+
+**Note**: sometimes the process fails because it can't create the user for the database. If this happens just relaunch the command.
+    
 
 ## Using
    The API is managed through Swagger interface on http://localhost:8090/swagger-ui/index.html
