@@ -28,10 +28,10 @@ docker-compose up --build
 ```
 If everything works well the application will be available in http://localhost:8090
 
-**Note**: sometimes the process fails because it can't create the user for the database. If this happens just relaunch the command.
+<font color="green">**NOTE**</font>: sometimes the process fails because it can't create the user for the database. If this happens just relaunch the command.
     
 
-## Using
+## How to use the API
    The API is managed through Swagger interface on http://localhost:8090/swagger-ui/index.html
 
 ### Let's get started
@@ -81,7 +81,9 @@ After these steps we are ready to start. **Let's go**.
 
 **CSV Stuffs**
    1. **Import CSV files**
-   
+      
+        <font color="green">**NOTE**</font>: The system supports the uploading a single file per request but multiples request at the same time.
+        
       Select the file to be uploaded
       ![upload_file](documentation/images/img_6.png)
    
