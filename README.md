@@ -82,7 +82,7 @@ After these steps we are ready to start. **Let's go**.
 **CSV Stuffs**
    1. **Import CSV files**
       
-        <font color="green">**NOTE**</font>: The system supports the uploading a single file per request but multiples request at the same time.
+        <font color="green">**NOTE**</font>: The system supports the uploading of a single file per request but multiples request at the same time.
         
       Select the file to be uploaded
       ![upload_file](documentation/images/img_6.png)
