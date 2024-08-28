@@ -32,9 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service
 @Slf4j
-@Primary
 public class CsvQueueProcessingService implements ProcessCsvUseCase {
 
   public static final String RECORD_ALREADY_EXISTS_IN_THE_DATABASE = "The record already exists in the database";
@@ -85,9 +83,8 @@ public class CsvQueueProcessingService implements ProcessCsvUseCase {
         FileProcess fileProcess = fileProcessPort.save(fileProcessDtoToFileProcess(fileProcessDto));
 
         List<LineData> savedLineDatas = lineDataPort.saveAll(lineDataDtoList.stream().map(lineDto ->lineDataDtoToLineData(lineDto, fileProcess)).toList());
-        /*fileProcessDto.setLineDataList(lineDataDtoList);*/
 
-        // avisa que termino de guardar el fichero sin procesar en la bdd
+        // send message to let know the loading process is over and should start the next one
         sendMessage1(fileProcess.getId().toString());
         return result;
       } else {

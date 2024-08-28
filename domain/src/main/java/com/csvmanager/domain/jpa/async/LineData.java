@@ -64,7 +64,6 @@ public class LineData {
       ObjectMapper mapper = new ObjectMapper();
       this.errors = mapper.writeValueAsString(errors);
     } catch (JsonProcessingException e) {
-      // Manejar la excepción, por ejemplo, loguear el error
       e.printStackTrace();
     }
   }
@@ -75,7 +74,6 @@ public class LineData {
       try {
         return mapper.readValue(errors, new TypeReference<List<String>>() {});
       } catch (JsonProcessingException e) {
-        // Manejar la excepción
         e.printStackTrace();
       }
     } else {

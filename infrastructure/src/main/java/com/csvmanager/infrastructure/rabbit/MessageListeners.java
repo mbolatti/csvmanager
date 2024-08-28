@@ -12,10 +12,8 @@ public class MessageListeners {
 
  /* @RabbitListener(queues = "#{config.queue1}")
   public void receive1(String message) {
-    // comenzar a procesar las lineas guardadas
     System.out.println("Received queue1 <" + message + ">");
     latch.countDown();
-
   }*/
 
   @RabbitListener(queues = "#{config.queue2}")

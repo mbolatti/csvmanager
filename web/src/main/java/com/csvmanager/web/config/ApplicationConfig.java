@@ -65,7 +65,7 @@ public class ApplicationConfig {
   }
 
   @Bean
-  @ConditionalOnProperty(name = "application.processingModel", havingValue = "sync")
+  @ConditionalOnProperty(name = "application.processing-model", havingValue = "sync")
   @ConditionalOnMissingBean(CsvQueueProcessingService.class)
   public ProcessCsvUseCase syncProcessCsvUseCase(PersonalDataPort personalDataPort,
       CsvParser csvParser, Messaging messaging) {
@@ -73,7 +73,7 @@ public class ApplicationConfig {
   }
 
   @Bean
-  @ConditionalOnProperty(name = "application.processingModel", havingValue = "async")
+  @ConditionalOnProperty(name = "application.processing-model", havingValue = "async")
   @ConditionalOnMissingBean(CsvProcessingService.class)
   public ProcessCsvUseCase asyncProcessCsvUseCase(PersonalDataPort personalDataPort,
       FileProcessPort fileProcessPort,
@@ -86,10 +86,6 @@ public class ApplicationConfig {
   @Bean
   @Lazy
   public CsvImportController csvImportController(ProcessCsvUseCase processCsvUseCase) {
-    /*String processingModel = environment.getProperty("application.processingModel");
-    String qualifier = processingModel + "ProcessCsvUseCase";
-    log.info("Injecting bean with qualifier: {}", qualifier);*/
-
     return new CsvImportController(processCsvUseCase);
   }
 

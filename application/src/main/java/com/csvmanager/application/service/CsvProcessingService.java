@@ -30,8 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service
-//@Qualifier("csvProcessingService")
 @Slf4j
 public class CsvProcessingService implements ProcessCsvUseCase {
 
