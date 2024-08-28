@@ -1,7 +1,7 @@
 package com.csvmanager.auth.config;
 
 import com.csvmanager.auth.service.MyUserDetailsService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,17 +19,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class SecConfigFilters {
-  private final JWTAuthFilter jwtAuthFilter;
-  private final MyUserDetailsService myUserDetailsService;
+  @Autowired
+  private JWTAuthFilter jwtAuthFilter;
+  @Autowired
+  private MyUserDetailsService myUserDetailsService;
 
   private static final String[] AUTH_WHITE_LIST = {
       "/v3/api-docs/**",
       "/swagger-ui/**",
       "/v2/api-docs/**",
       "/swagger-resources/**",
-      "/api/v1/public/auth/**"
+      "/api/v1/public/auth/**",
+      "/api/v1/public/messaging/**",
+      "/**"
   };
 
   @Bean
@@ -67,5 +71,4 @@ public class SecConfigFilters {
       throws Exception {
     return config.getAuthenticationManager();
   }
-
 }

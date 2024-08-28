@@ -16,6 +16,7 @@ services:
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "--silent" ]
       retries: 1
+      timeout: 5s
   app:
     container_name: csvimporter-mbolatti
     build: .
@@ -30,7 +31,21 @@ services:
       SPRING_DATASOURCE_PASSWORD: csvimporter
       SPRING_JPA_SHOW_SQL: false
     command: ["sh", "-c", "while ! nc -z mysql 3306; do sleep 1; done; java -jar /app.jar"]
-
+  rabbitmq:
+    image: 'rabbitmq:3.6-management-alpine'
+    ports:
+      # The standard AMQP protocol port
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'
+    environment:
+      # The location of the RabbitMQ server.  "amqp" is the protocol;
+      # "rabbitmq" is the hostname.  Note that there is not a guarantee
+      # that the server will start first!  Telling the pika client library
+      # to try multiple times gets around this ordering issue.
+      AMQP_URL: 'amqp://rabbitmq?connection_attempts=5&retry_delay=5'
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
 volumes:
   db_data:
   init:

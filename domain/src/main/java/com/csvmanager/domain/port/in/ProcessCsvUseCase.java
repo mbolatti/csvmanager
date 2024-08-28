@@ -5,9 +5,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ProcessCsvUseCase {
 
-  Object processCsv(MultipartFile file);
+  Object importCsvFile(MultipartFile file);
 
   Object returnAll();
 
   ByteArrayOutputStream writePersonalDataToCsv(ByteArrayOutputStream outputStream);
+
+  void sendMessage1(String message);
+
+  void sendMessage2(String message);
+
+  void sendMessage3(String message);
 }

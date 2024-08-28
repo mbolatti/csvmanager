@@ -19,7 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
-// OncePerRequestFilter for every request will be activated
 public class JWTAuthFilter extends OncePerRequestFilter {
 
   private static final String BEARER_PREFIX = "Bearer ";

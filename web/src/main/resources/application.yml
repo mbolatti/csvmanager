@@ -34,15 +34,36 @@ spring:
         - classpath:/resources/
         - classpath:/static/
         - classpath:/public/
+  rabbitmq:
+    template:
+      default-destroy-message: true
+      mandatory: true
+      message-ttl: 10000 # TTL en milisegundos (10 segundos)
+    dead-letter-exchange: my-dead-letter-exchange
+
 springdoc:
   swagger-ui:
     defaultModelsExpandDepth: -1
 
+rabbitmq:
+  routing:
+    key: demo-routing-key
+  exchange:
+    name: demo-exchange
+    dead-letter-exchange: demo-dead-letter-exchange
+  queue:
+    name1: demo-mqueue1
+    name2: demo-mqueue2
+    name3: demo-mqueue3
+    dead-letter-queue: demo-dead-letter-queue
+
+
 application:
   csv:
     parser: apache-commons-csv
+  processing-model: sync
 
-debug: false
+debug: true
 
 logging:
   level:

@@ -7,12 +7,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.csvmanager.config.ApplicationConfig;
-import com.csvmanager.controller.CsvImportController;
+import com.csvmanager.application.service.dto.PersonalDataDto;
+import com.csvmanager.application.service.dto.ProcessResultDto;
 import com.csvmanager.domain.port.in.ProcessCsvUseCase;
 import com.csvmanager.infrastructure.repository.PersonalDataRepository;
-import com.csvmanager.service.dto.PersonalDataDto;
-import com.csvmanager.service.dto.ProcessResultDto;
+import com.csvmanager.web.config.ApplicationConfig;
+import com.csvmanager.web.controller.CsvImportController;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.time.LocalDate;
@@ -58,7 +58,7 @@ public class CsvImportControllerTest {
   @Test
   public void testImportCsv_success() throws Exception {
     ProcessResultDto mockResult = new ProcessResultDto();
-    when(processCsvUseCase.processCsv(any(MockMultipartFile.class))).thenReturn(mockResult);
+    when(processCsvUseCase.importCsvFile(any(MockMultipartFile.class))).thenReturn(mockResult);
 
     MockMultipartFile file = new MockMultipartFile("file", "test.csv", "text/csv",
         "name,surname,date,city,code\n".getBytes());

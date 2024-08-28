@@ -335,3 +335,74 @@ databaseChangeLog:
               - column:
                   name: role_id
                   value: 1
+
+  - changeSet:
+      id: create-file_process-table
+      author: Martin Bolatti
+      changes:
+        - createTable:
+            tableName: file_process
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: file_name
+                  type: VARCHAR(255)
+              - column:
+                  name: import_date
+                  type: DATE
+  - changeSet:
+      id: create-line_data-table
+      author: Martin Bolatti
+      changes:
+        - createTable:
+            tableName: line_data
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: process_id
+                  type: BIGINT
+              - column:
+                  name: line_number
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: birth_date
+                  type: VARCHAR(255) # Consider using DATE if birthDate is always a date
+              - column:
+                  name: city
+                  type: VARCHAR(255)
+              - column:
+                  name: fiscal_code
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: errors
+                  type: TEXT
+        - addForeignKeyConstraint:
+            baseTableName: line_data
+            baseColumnNames: process_id
+            constraintName: FK_line_data_file_process
+            referencedTableName: file_process
+            referencedColumnNames: id

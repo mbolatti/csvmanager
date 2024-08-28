@@ -12,9 +12,9 @@ import com.csvmanager.domain.jpa.PersonalData;
 import com.csvmanager.domain.port.in.dto.Line;
 import com.csvmanager.domain.port.out.CsvParser;
 import com.csvmanager.domain.port.out.PersonalDataPort;
-import com.csvmanager.service.CsvProcessingService;
-import com.csvmanager.service.dto.ProcessResultDto;
-import com.csvmanager.service.exception.CsvFileFormatException;
+import com.csvmanager.application.service.CsvProcessingService;
+import com.csvmanager.application.service.dto.ProcessResultDto;
+import com.csvmanager.application.service.exception.CsvFileFormatException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -64,7 +64,7 @@ public class CsvProcessingServiceTest {
 
     when(csvParser.parse(any(), anyBoolean())).thenReturn(List.of(line));
 
-    ProcessResultDto result = (ProcessResultDto) csvProcessingService.processCsv(mockMultipartFile);
+    ProcessResultDto result = (ProcessResultDto) csvProcessingService.importCsvFile(mockMultipartFile);
 
     assertNotNull(result);
     assertEquals(1, result.getOk().getChargedList().size());
@@ -83,8 +83,8 @@ public class CsvProcessingServiceTest {
 
     when(csvParser.parse(any(), anyBoolean())).thenThrow(new IOException("Invalid CSV format"));
 
-    CsvProcessingService service = new CsvProcessingService(personalDataPort, csvParser);
-    assertThrows(CsvFileFormatException.class, () -> service.processCsv(mockMultipartFile),
+    CsvProcessingService service = new CsvProcessingService(personalDataPort, csvParser, null);
+    assertThrows(CsvFileFormatException.class, () -> service.importCsvFile(mockMultipartFile),
         "Fail trying to process csv data: Invalid CSV format from file: test.csv");
   }
 }
