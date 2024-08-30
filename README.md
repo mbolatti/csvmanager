@@ -31,6 +31,17 @@ If everything works well the application will be available in http://localhost:8
 <font color="green">**NOTE**</font>: sometimes the process fails because it can't create the user for the database. If this happens just relaunch the command.
     
 
+## Application's configuration
+The application is able to use two modes for processing the CSV files. Synchonous and Asynchronous.
+This can be configured through the following parameters in the application's configuration file:
+
+    | mode         | parameter        | value |
+    |--------------|------------------|-------|
+    | synchronous  | processing-model | sync  |
+    | asynchronous | processing-model | async |
+
+By default, is synchronous the processing 
+
 ## How to use the API
    The API is managed through Swagger interface on http://localhost:8090/swagger-ui/index.html
 

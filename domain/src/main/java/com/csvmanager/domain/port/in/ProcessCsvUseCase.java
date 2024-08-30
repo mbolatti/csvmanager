@@ -13,7 +13,7 @@ public interface ProcessCsvUseCase {
 
   void sendMessage1(String message);
 
-  void sendMessage2(String message);
+  Object returnResults();
 
-  void sendMessage3(String message);
+  Object findById(String id);
 }

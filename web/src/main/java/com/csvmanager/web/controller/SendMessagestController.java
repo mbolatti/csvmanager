@@ -44,12 +44,6 @@ public class SendMessagestController {
       case 1:
         processCsvUseCase.sendMessage1(message);
         break;
-      case 2:
-        processCsvUseCase.sendMessage2(message);
-        break;
-      case 3:
-        processCsvUseCase.sendMessage3(message);
-        break;
       default:
         throw new RuntimeException("Invalid queue id");
     }

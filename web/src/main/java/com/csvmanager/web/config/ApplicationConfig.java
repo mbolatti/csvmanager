@@ -65,7 +65,7 @@ public class ApplicationConfig {
   }
 
   @Bean
-  @ConditionalOnProperty(name = "application.processing-model", havingValue = "sync")
+  @ConditionalOnProperty(name = "application.processing-model", havingValue = "sync", matchIfMissing = true)
   @ConditionalOnMissingBean(CsvQueueProcessingService.class)
   public ProcessCsvUseCase syncProcessCsvUseCase(PersonalDataPort personalDataPort,
       CsvParser csvParser, Messaging messaging) {

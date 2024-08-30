@@ -47,12 +47,14 @@ springdoc:
 
 rabbitmq:
   routing:
-    key: demo-routing-key
+    #key: demo-routing-key
+    key1: csv-processing-routing-key
   exchange:
-    name: demo-exchange
+    #name: demo-exchange
+    name: csv-processing-exchange
     dead-letter-exchange: demo-dead-letter-exchange
   queue:
-    name1: demo-mqueue1
+    name1: communication-queue
     name2: demo-mqueue2
     name3: demo-mqueue3
     dead-letter-queue: demo-dead-letter-queue
@@ -61,9 +63,9 @@ rabbitmq:
 application:
   csv:
     parser: apache-commons-csv
-  processing-model: sync
+  processing-model: async
 
-debug: true
+debug: false
 
 logging:
   level:

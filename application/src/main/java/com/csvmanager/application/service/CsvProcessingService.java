@@ -110,13 +110,13 @@ public class CsvProcessingService implements ProcessCsvUseCase {
   }
 
   @Override
-  public void sendMessage2(String message) {
-    messaging.sendMessage2(message);
+  public Object returnResults() {
+    throw new RuntimeException("This must no be implemented. If you're here, it's a bug");
   }
 
   @Override
-  public void sendMessage3(String message) {
-    messaging.sendMessage3(message);
+  public Object findById(String id) {
+    throw new RuntimeException("This must no be implemented. If you're here, it's a bug");
   }
 
   private List<PersonalDataDto> getPersonalDatas() {

@@ -4,6 +4,7 @@ import com.csvmanager.domain.jpa.async.FileProcess;
 import com.csvmanager.domain.port.out.FileProcessPort;
 import com.csvmanager.infrastructure.repository.FileProcessRepository;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +21,8 @@ public class FileProcessAdapter implements FileProcessPort {
   @Override
   public FileProcess save(FileProcess fileProcess) {
     log.info("Saving file process: {}", fileProcess);
-
-    FileProcess file = FileProcess.createNew();
-    file.setFileName("someFileName.csv");
-    file.setImportDate(LocalDate.now());
-    return fileProcessRepository.save(file);
+    fileProcess.setImportDate(LocalDate.now());
+    return fileProcessRepository.save(fileProcess);
   }
 
   @Override
@@ -37,5 +35,10 @@ public class FileProcessAdapter implements FileProcessPort {
   public FileProcess findById(String id) {
     return fileProcessRepository.findById(Long.valueOf(id))
         .orElseThrow(() -> new RuntimeException("File not found"));
+  }
+
+  @Override
+  public List<FileProcess> findAll() {
+    return fileProcessRepository.findAll();
   }
 }

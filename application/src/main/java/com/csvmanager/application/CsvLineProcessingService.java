@@ -75,7 +75,7 @@ public class CsvLineProcessingService {
       Optional<com.csvmanager.domain.jpa.PersonalData> optionalPersonalData = personalDataPort.findByImportDateCityFC(
           fileProcess.getImportDate(), personalData.getCity(), personalData.getFiscalCode());
       if (optionalPersonalData.isPresent()) {
-        lineData.getErrors().add(RECORD_ALREADY_EXISTS_IN_THE_DATABASE);
+        lineData.setErrors(List.of(RECORD_ALREADY_EXISTS_IN_THE_DATABASE));
         lineData.setStatus(ProcessStatus.PROCESSING_ERROR);
         processedOk = false;
         lineDataPort.save(lineData);

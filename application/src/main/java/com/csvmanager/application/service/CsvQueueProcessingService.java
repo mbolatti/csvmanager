@@ -1,5 +1,10 @@
 package com.csvmanager.application.service;
 
+import com.csvmanager.application.service.dto.PersonalDataDto;
+import com.csvmanager.application.service.dto.async.FileProcessDto;
+import com.csvmanager.application.service.dto.async.LineDataDto;
+import com.csvmanager.application.service.exception.CsvFileDownloadException;
+import com.csvmanager.application.service.exception.CsvFileFormatException;
 import com.csvmanager.domain.jpa.async.FileProcess;
 import com.csvmanager.domain.jpa.async.LineData;
 import com.csvmanager.domain.jpa.async.ProcessStatus;
@@ -9,12 +14,6 @@ import com.csvmanager.domain.port.out.CsvParser;
 import com.csvmanager.domain.port.out.FileProcessPort;
 import com.csvmanager.domain.port.out.LineDataPort;
 import com.csvmanager.domain.port.out.PersonalDataPort;
-import com.csvmanager.application.service.dto.PersonalDataDto;
-import com.csvmanager.application.service.dto.ProcessResultDto;
-import com.csvmanager.application.service.dto.async.FileProcessDto;
-import com.csvmanager.application.service.dto.async.LineDataDto;
-import com.csvmanager.application.service.exception.CsvFileDownloadException;
-import com.csvmanager.application.service.exception.CsvFileFormatException;
 import jakarta.validation.Validation;
 import jakarta.validation.ValidatorFactory;
 import java.io.ByteArrayOutputStream;
@@ -22,13 +21,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,15 +62,15 @@ public class CsvQueueProcessingService implements ProcessCsvUseCase {
   @Override
   @Transactional
   public Object importCsvFile(MultipartFile file) {
-    log.info("processing CSV file: {} with class {}", file.getOriginalFilename(), this.getClass().getName());
+    log.info("processing CSV file: {} with class {}", file.getOriginalFilename(),
+        this.getClass().getName());
     boolean skipHeaders = true;
     try {
       if (hasCSVFormat(file)) {
-        ProcessResultDto result = new ProcessResultDto();
-        UUID uuid = UUID.randomUUID();
         LocalDate importDate = LocalDate.now();
         FileProcessDto fileProcessDto = FileProcessDto.createNew();
         fileProcessDto.setImportDate(importDate);
+        fileProcessDto.setFileName(file.getOriginalFilename());
 
         List<LineDataDto> lineDataDtoList = csvParser.parse(
                 file.getInputStream(),
@@ -82,11 +79,13 @@ public class CsvQueueProcessingService implements ProcessCsvUseCase {
 
         FileProcess fileProcess = fileProcessPort.save(fileProcessDtoToFileProcess(fileProcessDto));
 
-        List<LineData> savedLineDatas = lineDataPort.saveAll(lineDataDtoList.stream().map(lineDto ->lineDataDtoToLineData(lineDto, fileProcess)).toList());
+        lineDataPort.saveAll(
+            lineDataDtoList.stream().map(lineDto -> lineDataDtoToLineData(lineDto, fileProcess))
+                .toList());
 
         // send message to let know the loading process is over and should start the next one
         sendMessage1(fileProcess.getId().toString());
-        return result;
+        return Map.of("fileProcessId", fileProcess.getId());
       } else {
         throw new CsvFileFormatException(
             String.format("Error in the csv file format - filename: %s",
@@ -101,7 +100,7 @@ public class CsvQueueProcessingService implements ProcessCsvUseCase {
 
   @Override
   public Object returnAll() {
-    return getPersonalDatas();
+    return getPersonalData();
   }
 
   @Override
@@ -120,15 +119,56 @@ public class CsvQueueProcessingService implements ProcessCsvUseCase {
   }
 
   @Override
-  public void sendMessage1(String message) { messaging.sendMessage1(message); }
+  public void sendMessage1(String message) {
+    messaging.sendMessage1(message);
+  }
 
   @Override
-  public void sendMessage2(String message) { messaging.sendMessage2(message); }
+  public Object returnResults() {
+    return fileProcessPort.findAll().stream()
+        .map(fileResult -> this.fileProcessJpaToFileProcessDto(fileResult, false))
+        .collect(Collectors.toList());
+  }
 
   @Override
-  public void sendMessage3(String message) { messaging.sendMessage3(message); }
+  public Object findById(String id) {
+    return fileProcessJpaToFileProcessDto(fileProcessPort.findById(id), true);
+  }
 
-  private List<PersonalDataDto> getPersonalDatas() {
+  private FileProcessDto fileProcessJpaToFileProcessDto(FileProcess fileProcess,
+      boolean addLineData) {
+    FileProcessDto fileProcessDto = new FileProcessDto();
+    fileProcessDto.setId(fileProcess.getId());
+    fileProcessDto.setFileName(fileProcess.getFileName());
+    fileProcessDto.setImportDate(fileProcess.getImportDate());
+    fileProcessDto.setStatus(fileProcess.getStatus());
+    if (addLineData) {
+      List<LineDataDto> lineDataDtos = lineDataPort.findByFileProcess(fileProcess.getId())
+          .stream()
+          .map(this::lineDataToLineDataDto)
+          .collect(Collectors.toList());
+      fileProcessDto.setLineDataList(lineDataDtos);
+    } else {
+      fileProcessDto.setLineDataList(List.of());
+    }
+    return fileProcessDto;
+  }
+
+  private LineDataDto lineDataToLineDataDto(LineData lineData) {
+    LineDataDto lineDataDto = new LineDataDto();
+    lineDataDto.setId(lineData.getId());
+    lineDataDto.setLineNumber(lineData.getLineNumber());
+    lineDataDto.setName(lineData.getName());
+    lineDataDto.setLastName(lineData.getLastName());
+    lineDataDto.setBirthDate(lineData.getBirthDate());
+    lineDataDto.setCity(lineData.getCity());
+    lineDataDto.setFiscalCode(lineData.getFiscalCode());
+    lineDataDto.setStatus(lineData.getStatus());
+    lineDataDto.setErrors(lineData.getErrors());
+    return lineDataDto;
+  }
+
+  private List<PersonalDataDto> getPersonalData() {
     return personalDataPort.findAllImportedCsv().stream().map(a ->
         PersonalDataDto.builder()
             .id(a.getId())

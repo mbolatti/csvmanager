@@ -7,6 +7,9 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,43 +47,23 @@ public class Config {
   private String ROUTING_KEY_3;
 
   @Bean
+  public DirectExchange deadLetterExchange() {
+    return new DirectExchange(DEAD_LETTER_EXCHANGE);
+  }
+
+  @Bean
   public Queue queue1() {
     return QueueBuilder
         .durable(QUEUE_NAME_1)
         /*.autoDelete(false)*/
-        .withArgument(X_DEAD_LETTER_EXCHANGE_HEADER, this.deadLetterExchange())
+        .withArgument(X_DEAD_LETTER_EXCHANGE_HEADER, DEAD_LETTER_EXCHANGE)
         .build();
-  }
-
-  @Bean
-  public Queue queue2() {
-    return QueueBuilder
-        .durable(QUEUE_NAME_2)
-        /*.autoDelete()*/
-        .withArgument(X_DEAD_LETTER_EXCHANGE_HEADER, this.deadLetterExchange())
-        .build();
-  }
-
-  @Bean
-  public Queue queue3() {
-    return QueueBuilder
-        .durable(QUEUE_NAME_3)
-        /*.autoDelete()*/
-        .withArgument(X_DEAD_LETTER_EXCHANGE_HEADER, this.deadLetterExchange())
-        .build();
-  }
-
-  @Bean
-  public DirectExchange deadLetterExchange() {
-    return new DirectExchange(DEAD_LETTER_EXCHANGE);
   }
 
   @Bean
   public Queue deadLetterQueue() {
     return QueueBuilder
         .durable(QUEUE_DEAD_LETTER)
-        /*.autoDelete()*/
-        .withArgument(X_DEAD_LETTER_EXCHANGE_HEADER, this.deadLetterExchange())
         .build();
   }
 
@@ -91,21 +74,24 @@ public class Config {
 
   @Bean
   public Binding binding1(Queue queue1, TopicExchange exchange) {
-    return BindingBuilder.bind(queue1()).to(exchange).with(ROUTING_KEY_1);
-  }
-
-  @Bean
-  public Binding binding2(Queue queue2, TopicExchange exchange) {
-    return BindingBuilder.bind(queue2()).to(exchange).with(ROUTING_KEY_2);
-  }
-
-  @Bean
-  public Binding binding3(Queue queue3, TopicExchange exchange) {
-    return BindingBuilder.bind(queue3()).to(exchange).with(ROUTING_KEY_3);
+    return BindingBuilder.bind(queue1).to(exchange).with(ROUTING_KEY_1);
   }
 
   @Bean
   public Binding bindingDLQ(Queue deadLetterQueue, DirectExchange deadLetterExchange) {
     return BindingBuilder.bind(deadLetterQueue).to(deadLetterExchange).with("dlq");
+  }
+
+  // RabbitAdmin manages the creation and deletion of Queues and Exchanges automatically
+  @Bean
+  public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
+    RabbitAdmin rabbitAdmin = new RabbitAdmin(connectionFactory);
+    rabbitAdmin.afterPropertiesSet();
+    return rabbitAdmin;
+  }
+
+  @Bean
+  public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    return new RabbitTemplate(connectionFactory);
   }
 }
